@@ -3,10 +3,10 @@
   "version": "0.4.0",
   "private": true,
   "scripts": {
-    "dev": "npm run build && next dev",
+    "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "prestart": "if [ ! -d .next ]; then npm run build; fi",
+    "start": "next start -p 3000"
   },
   "dependencies": {
     "@deepgram/sdk": "^3.2.0-alpha.1",
@@ -35,7 +35,8 @@
     "react-textarea-autosize": "^8.5.3",
     "react-toastify": "^10.0.4",
     "remark-gfm": "^4.0.0",
-    "swr": "^2.2.4"
+    "swr": "^2.2.4",
+    "sharp": "^0.29.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.1.0",
