@@ -9,17 +9,6 @@ Agentic Voice is an advanced AI-powered chat application designed for seamless r
 ## Features
 
 - **Real-time Communication:** Engage in smooth, responsive chat sessions.
-- **AI-Powered Responses:** Utilize OpenAI's GPT models for intelligent, context-aware replies.
-- **Contextual Data Retrieval:** Integrate Exa API to fetch and incorporate relevant data into conversations.
-- **Customizable Personas:** Tailor chat assistant personas to match specific needs and scenarios.
-
-# Agentic Voice
-
-Agentic Voice is an advanced AI-powered voice chat application designed for seamless real-time communication and intelligent responses. Built with Next.js, OpenAI, and Exa API, it leverages cutting-edge technologies to enhance user interactions and provide contextual, relevant information dynamically.
-
-## Features
-
-- **Real-time Communication:** Engage in smooth, responsive chat sessions.
 - **AI-Powered Responses:** Utilize OpenAI's GPT-4o models for intelligent, context-aware replies.
 - **Contextual Data Retrieval:** Integrate Exa API to fetch and incorporate relevant data into conversations.
 - **Customizable Personas:** Tailor chat assistant personas to match specific needs and scenarios.
