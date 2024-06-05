@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * iOS input fix
+ */
+input {
+  border-radius: 0;
+}
+
+input[type="search"] {
+  -webkit-appearance: none;
+}
+
+/**
+ * General stuff
+ */
+:root {
+  background: #0b0b0c;
+  font-size: 16px;
+  color-scheme: dark;
+}
+
+@media only screen and (min-width: 2000px) {
+  :root {
+    font-size: 22px;
+  }
+}
+
+body {
+  color: rgba(255, 255, 255, 0.87);
+  background: #0b0b0c url("/bg.svg") no-repeat top center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+* {
+  /* outline: 1px solid red; */
+}
+
+@layer utilities {
+  .glass {
+    /* From https://css.glass */
+    @apply bg-[rgba(150,140,140,0.06)];
+    @apply border border-[rgba(150,140,140,0.1)];
+    box-shadow: 0 0.25rem 1.875rem rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(0.3125rem);
+    -webkit-backdrop-filter: blur(0.3125rem);
+  }
+
+  .gradient-shadow {
+    box-shadow:
+      -1rem 0px 2rem 0px #13ef9335,
+      1rem 0px 2rem 0px #149afb35;
+  }
+}
+
+/* Additional vertical padding used by kbd tag. */
+.py-05 {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+
+.markdown {
+  @apply leading-normal break-words;
+}
+
+.pre-overflow-y-auto pre {
+  @apply overflow-y-auto;
+}
+
+.word-break {
+  word-break: break-word;
+}
+.markdown > * + * {
+  @apply my-2;
+}
+
+.markdown li + li {
+  @apply mt-1;
+}
+
+.markdown li > p + p {
+  @apply mt-6;
+}
+
+.markdown strong {
+  @apply font-semibold;
+}
+
+.markdown a {
+  @apply font-semibold;
+}
+
+.markdown strong a {
+  @apply font-bold;
+}
+
+.markdown h1 {
+  @apply leading-tight border-b text-4xl font-semibold mb-4 mt-6 pb-2;
+}
+
+.markdown h2 {
+  @apply leading-tight border-b text-2xl font-semibold mb-4 mt-6 pb-2;
+}
+
+.markdown h3 {
+  @apply leading-snug text-lg font-semibold mb-4 mt-6;
+}
+
+.markdown h4 {
+  @apply leading-none  font-semibold mb-4 mt-6;
+}
+
+.markdown h5 {
+  @apply leading-tight text-sm font-semibold mb-4 mt-6;
+}
+
+.markdown h6 {
+  @apply leading-tight text-sm font-semibold  mb-4 mt-6;
+}
+
+.markdown blockquote {
+  @apply border-l-4  pl-4 pr-4;
+}
+
+.markdown ul {
+  @apply pl-8 list-disc;
+}
+
+.markdown ol {
+  @apply pl-8 list-decimal;
+}
+
+.markdown kbd {
+  @apply text-xs inline-block rounded border px-1 py-05 align-middle font-normal font-mono shadow;
+}
+
+.markdown table {
+  @apply border-gray-600;
+}
+
+.markdown th {
+  @apply border py-1 px-3;
+}
+
+.markdown td {
+  @apply border py-1 px-3;
+}
+
+/* Override pygments style background color. */
+.markdown .highlight pre {
+  @apply bg-gray-100 !important;
+}
