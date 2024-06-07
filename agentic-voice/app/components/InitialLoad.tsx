@@ -1,3 +1,4 @@
+// initial load component
 import { Headphones } from "./Headphones";
 import { isBrowser } from "react-device-detect";
 import { Spinner } from "@nextui-org/react";
