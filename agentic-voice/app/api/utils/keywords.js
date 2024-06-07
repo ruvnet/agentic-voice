@@ -1,3 +1,6 @@
+// keywords.js contains a list of broad trigger keywords or phrases that are used to extract keywords from user messages.
+// keywords.js
+
 const keywords = {
   // Add broad trigger keywords or phrases here
   "weather": ["weather", "temperature", "forecast", "climate"],
@@ -38,3 +41,4 @@ module.exports = {
   keywords,
   extractKeywords
 };
+

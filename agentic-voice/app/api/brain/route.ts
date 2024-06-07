@@ -1,6 +1,7 @@
+// route.ts is the entry point for the API route that handles the incoming requests and generates responses using the OpenAI API and Exa API.
 import OpenAI from "openai";
 import { OpenAIStream, StreamingTextResponse } from "ai";
-import { extractKeywords } from "../utils/keywords";
+import { extractKeywords, keywords } from "../utils/keywords";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
@@ -10,7 +11,7 @@ const openai = new OpenAI({
 // See https://vercel.com/docs/concepts/functions/edge-functions
 export const runtime = "edge";
 
-const TARGET_KEYWORDS = ['news', 'sports', 'technology', 'entertainment', 'food', 'education'];
+const TARGET_KEYWORDS = Object.keys(keywords);
 
 async function searchExaAPI(keyword: string, apiKey: string, numResults: number = 5) {
   const response = await fetch('https://api.exa.ai/search', {
