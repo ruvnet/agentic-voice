@@ -2,7 +2,6 @@
 // keywords.js
 
 const keywords = {
-  // Add broad trigger keywords or phrases here
   "weather": ["weather", "temperature", "forecast", "climate"],
   "news": ["news", "headlines", "current events", "breaking news"],
   "sports": ["sports", "game", "score", "team"],
@@ -17,21 +16,14 @@ const keywords = {
   "developer": ["developer", "programming", "coding", "software", "github", "npm", "python", "javascript"],
 };
 
-/**
- * Extract keywords from user messages.
- * @param {Array} messages - Array of user messages.
- * @returns {Array} - Array of extracted keywords.
- */
 function extractKeywords(messages) {
   const extractedKeywords = [];
   const messageContent = messages.map(message => message.content.toLowerCase()).join(' ');
 
   for (const [category, words] of Object.entries(keywords)) {
-    words.forEach(word => {
-      if (messageContent.includes(word)) {
-        extractedKeywords.push(category);
-      }
-    });
+    if (words.some(word => messageContent.includes(word))) {
+      extractedKeywords.push(category);
+    }
   }
 
   return extractedKeywords;
@@ -41,4 +33,3 @@ module.exports = {
   keywords,
   extractKeywords
 };
-

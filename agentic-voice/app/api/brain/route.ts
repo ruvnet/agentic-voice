@@ -7,13 +7,16 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
-// Optional, but recommended: run on the edge runtime.
-// See https://vercel.com/docs/concepts/functions/edge-functions
 export const runtime = "edge";
 
 const TARGET_KEYWORDS = Object.keys(keywords);
 
-async function searchExaAPI(keyword: string, apiKey: string, numResults: number = 5) {
+interface Message {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+}
+
+async function searchExaAPI(query: string, apiKey: string, numResults: number = 5) {
   const response = await fetch('https://api.exa.ai/search', {
     method: 'POST',
     headers: {
@@ -21,11 +24,11 @@ async function searchExaAPI(keyword: string, apiKey: string, numResults: number 
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
     },
-    body: JSON.stringify({ query: keyword, numResults })
+    body: JSON.stringify({ query, numResults })
   });
 
   const data = await response.json();
-  console.log(`searchExaAPI response for keyword "${keyword}":`, data);
+  console.log(`searchExaAPI response for query "${query}":`, data);
 
   if (!data.results) {
     throw new Error('No results found in Exa API response');
@@ -59,30 +62,24 @@ export async function POST(req: Request) {
   try {
     console.log("Request received at:", new Date().toISOString());
 
-    const { messages } = await req.json();
+    const { messages }: { messages: Message[] } = await req.json();
     console.log("Messages extracted:", messages);
 
     const start = Date.now();
-    const keywords = extractKeywords(messages);
-    console.log("Keywords extracted:", keywords);
+    const userMessage = messages.filter((msg: Message) => msg.role === 'user').map((msg: Message) => msg.content).join(' ');
+    const extractedKeywords = extractKeywords(messages);
+    console.log("Keywords extracted:", extractedKeywords);
 
-    // Filter keywords to include only target keywords
-    const filteredKeywords = keywords.filter(keyword => TARGET_KEYWORDS.includes(keyword));
-    console.log("Filtered keywords:", filteredKeywords);
+    // Check if the user's message contains any of the target keywords
+    const containsTargetKeyword = TARGET_KEYWORDS.some(keyword => userMessage.includes(keyword));
 
-    // Perform search using Exa API with the filtered keywords
-    const searchResults = await Promise.all(
-      filteredKeywords.map(async (keyword) => {
-        try {
-          return await searchExaAPI(keyword, process.env.EXASEARCH_API_KEY!, 5);
-        } catch (error) {
-          console.error(`Error searching Exa API for keyword "${keyword}":`, error);
-          return { results: [] };
-        }
-      })
-    );
+    // Use the user's message directly if it contains a target keyword, otherwise fall back to extracted keywords
+    const searchQuery = containsTargetKeyword ? userMessage : extractedKeywords.find(keyword => TARGET_KEYWORDS.includes(keyword)) || userMessage;
+    console.log("Search query:", searchQuery);
 
-    const ids = searchResults.flatMap(result => result.results?.map((res: any) => res.id) || []);
+    // Perform search using Exa API with the search query
+    const searchResults = await searchExaAPI(searchQuery, process.env.EXASEARCH_API_KEY!, 5);
+    const ids = searchResults.results?.map((res: any) => res.id) || [];
     console.log("Search results IDs:", ids);
 
     // Fallback message if no IDs are found
@@ -133,7 +130,7 @@ export async function POST(req: Request) {
         ...messages,
         {
           role: "system",
-          content: `Here is an overview of the retrieved data: ${JSON.stringify(retrievedData)}`
+          content: `Here are the top results for your query:\n${retrievedData.map((item: { title: string; url: string; author: string; text: string; }) => `Title: ${item.title}\nURL: ${item.url}\nAuthor: ${item.author}\nText: ${item.text}\n`).join('\n\n')}`
         }
       ],
     });
