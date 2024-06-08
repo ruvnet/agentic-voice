@@ -64,6 +64,7 @@ npm install
 # Prompt the user for API keys
 read -p "Enter your Deepgram API Key: " DEEPGRAM_API_KEY
 read -p "Enter your OpenAI API Key: " OPENAI_API_KEY
+read -p "Enter your EXA API Key: " EXASEARCH_API_KEY
 
 # Create .env.local file with the provided keys
 echo "Creating .env.local file..."
@@ -71,6 +72,7 @@ cat <<EOL > .env.local
 DEEPGRAM_STT_DOMAIN=https://api.deepgram.com
 DEEPGRAM_API_KEY=$DEEPGRAM_API_KEY
 OPENAI_API_KEY=$OPENAI_API_KEY
+EXASEARCH_API_KEY=$EXASEARCH_API_KEY
 EOL
 
 # Inform the user the setup is complete
