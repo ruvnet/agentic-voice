@@ -180,7 +180,15 @@ module.exports = {
 ```
 ### Speech Detection Settings
 
-The `MicrophoneContextProvider` script includes optimized settings for speech detection to enhance performance in various environments. The script ensures proper client-side execution with the `"use client"` directive at the top. It uses a `DEFAULT_SENSITIVITY` value of `0.2` and a `VAD_THRESHOLD` of `0.025` to effectively detect voice activity in loud environments. Additionally, a `NOISE_GATE_THRESHOLD` variable is included (commented out) for potential use in further filtering non-speech sounds. The setup also leverages audio processing nodes, such as gain and biquad filters, to improve microphone sensitivity and noise suppression.
+The `MicrophoneContextProvider` script includes optimized settings for speech detection to enhance performance in various environments:
+
+- **Client-side Execution**: Ensures proper client-side execution with the `"use client"` directive placed at the top of the file, enabling full functionality on the client side.
+
+- **Sensitivity and Thresholds**: Configures a `DEFAULT_SENSITIVITY` value of `0.2` to adjust the gain for loud environments and a `VAD_THRESHOLD` of `0.025` to accurately detect voice activity while minimizing false positives from background noise.
+
+- **Noise Gate**: Includes a `NOISE_GATE_THRESHOLD` variable (currently commented out) for potential use. This variable can be activated to add an additional layer of filtering for non-speech sounds, further improving the clarity of detected speech.
+
+- **Audio Processing**: Utilizes audio processing nodes such as gain and biquad filters. The gain node adjusts microphone sensitivity, while the biquad filter is set to a low-pass configuration with a frequency of 1000 Hz to target the typical range of human speech. These nodes work together to enhance speech detection and suppress unwanted noise.
 
 #### Configuration
 
