@@ -6,14 +6,15 @@ Agentic Voice is an advanced AI-powered chat application designed for seamless r
 
 🎤 https://voice.ruv.io 
 
-## Features
+### Features
 
-- **Real-time Communication:** Engage in smooth, responsive chat sessions.
-- **AI-Powered Responses:** Utilize OpenAI's GPT-4o models for intelligent, context-aware replies.
-- **Contextual Data Retrieval:** Integrate Exa API to fetch and incorporate relevant data into conversations.
-- **Customizable Personas:** Tailor chat assistant personas to match specific needs and scenarios.
-- **Open Source and Customizable:** Fully open-source with the ability to customize features and functionalities.
-
+- **Real-time Communication**: Engage in smooth, responsive chat sessions.
+- **AI-Powered Responses**: Utilize OpenAI's GPT-4 models for intelligent, context-aware replies.
+- **Contextual Data Retrieval**: Integrate Exa API to fetch and incorporate relevant data into conversations.
+- **Customizable Personas**: Tailor chat assistant personas to match specific needs and scenarios.
+- **Advanced Speech Detection**: Implement optimized settings for effective voice activity detection and noise suppression, ensuring clear and accurate speech recognition.
+- **Open Source and Customizable**: Fully open-source with the ability to customize features and functionalities.
+  
 ## Use Cases
 
 ### Customer Support
