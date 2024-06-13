@@ -177,6 +177,30 @@ module.exports = {
   extractKeywords
 };
 ```
+### Speech Detection Settings
+
+The `MicrophoneContextProvider` script includes optimized settings for speech detection to enhance performance in various environments. The script ensures proper client-side execution with the `"use client"` directive at the top. It uses a `DEFAULT_SENSITIVITY` value of `0.2` and a `VAD_THRESHOLD` of `0.025` to effectively detect voice activity in loud environments. Additionally, a `NOISE_GATE_THRESHOLD` variable is included (commented out) for potential use in further filtering non-speech sounds. The setup also leverages audio processing nodes, such as gain and biquad filters, to improve microphone sensitivity and noise suppression.
+
+#### Configuration
+
+File: `./app/context/microphone.tsx`
+
+```javascript
+const DEFAULT_SENSITIVITY = 0.5; // Default sensitivity value to capture most sounds effectively
+// Example values for different use cases:
+// const DEFAULT_SENSITIVITY = 0.6; // Higher sensitivity for quieter environments
+// const DEFAULT_SENSITIVITY = 0.3; // Lower sensitivity for louder environments
+
+const VAD_THRESHOLD = 0.01; // Moderate threshold for detecting speech
+// Example values for different use cases:
+// const VAD_THRESHOLD = 0.005; // Lower threshold to capture softer speech
+// const VAD_THRESHOLD = 0.015; // Higher threshold to filter out more background noise
+
+const NOISE_GATE_THRESHOLD = 0.001; // Noise gate threshold to filter out non-speech sounds
+// Example values for different use cases:
+// const NOISE_GATE_THRESHOLD = 0.05; // Lower threshold for less strict noise filtering
+// const NOISE_GATE_THRESHOLD = 0.2; // Higher threshold for more strict noise filtering
+```
 
 ## Updating API Endpoints and Integrating Data Sources
 
