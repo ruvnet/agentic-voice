@@ -1,3 +1,5 @@
+/// app/layout.tsx - Layout for the entire application
+
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Inter } from "next/font/google";
 import { NowPlayingContextProvider } from "react-nowplaying";

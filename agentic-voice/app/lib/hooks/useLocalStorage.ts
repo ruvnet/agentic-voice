@@ -1,24 +1,42 @@
-import { useEffect, useState } from 'react'
+// app/lib/hooks/useLocalStorage.ts
 
-export const useLocalStorage = <T>(
+import { useEffect, useState, SetStateAction } from 'react';
+
+export const useLocalStorage = <T,>(
   key: string,
-  initialValue?: T
-): [T | undefined, (value: T) => void] => {
-  const [storedValue, setStoredValue] = useState(initialValue)
+  initialValue: T
+): [T, (value: SetStateAction<T>) => void] => {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(error);
+      return initialValue;
+    }
+  });
 
   useEffect(() => {
-    // Retrieve from localStorage
-    const item = window.localStorage.getItem(key)
-    if (item) {
-      setStoredValue(JSON.parse(item))
+    try {
+      const item = window.localStorage.getItem(key);
+      if (item) {
+        setStoredValue(JSON.parse(item));
+      }
+    } catch (error) {
+      console.error(error);
     }
-  }, [key])
+  }, [key]);
 
-  const setValue = (value: T) => {
-    // Save state
-    setStoredValue(value)
-    // Save to localStorage
-    window.localStorage.setItem(key, JSON.stringify(value))
-  }
-  return [storedValue, setValue]
-}
+  const setValue = (value: SetStateAction<T>) => {
+    try {
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return [storedValue, setValue];
+};

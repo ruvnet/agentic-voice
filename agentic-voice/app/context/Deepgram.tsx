@@ -15,30 +15,35 @@ import {
   useContext,
   useEffect,
   useState,
+  ReactNode,
 } from "react";
 import { useToast } from "./Toast";
 import { useLocalStorage } from "../lib/hooks/useLocalStorage";
 
-type DeepgramContext = {
-  ttsOptions: SpeakSchema | undefined;
-  setTtsOptions: (value: SpeakSchema) => void;
+// Define the context type
+interface DeepgramContextType {
+  ttsOptions: {
+    model: string;
+    autoVoice: string;
+  };
+  setTtsOptions: Dispatch<SetStateAction<{
+    model: string;
+    autoVoice: string;
+  }>>;
   sttOptions: LiveSchema | undefined;
-  setSttOptions: (value: LiveSchema) => void;
+  setSttOptions: Dispatch<SetStateAction<LiveSchema | undefined>>;
   connection: LiveClient | undefined;
   connectionReady: boolean;
-};
-
-interface DeepgramContextInterface {
-  children: React.ReactNode;
 }
 
-const DeepgramContext = createContext({} as DeepgramContext);
+const DeepgramContext = createContext<DeepgramContextType | undefined>(undefined);
 
 const DEFAULT_TTS_MODEL = 'aura-asteria-en';
 const DEFAULT_STT_MODEL = 'nova-2';
 
 const defaultTtsOptions = {
-  model: DEFAULT_TTS_MODEL
+  model: DEFAULT_TTS_MODEL,
+  autoVoice: "off"
 }
 
 const defaultSttsOptions = {
@@ -136,20 +141,18 @@ const voices: {
 };
 
 const voiceMap = (model: string) => {
-  return voices[model];
+  return voices[model] || { name: "Unknown", avatar: "", language: "Unknown", accent: "Unknown" };
 };
 
 const getApiKey = async (): Promise<string> => {
-  // Replace 'YOUR_HARD_CODED_API_KEY' with your actual Deepgram API key
   const hardCodedApiKey = 'bab95327fbe5eca16bf944edfd151104de7a1f1c';
   return hardCodedApiKey;
 };
 
-
-const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
+const DeepgramContextProvider = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
-  const [ttsOptions, setTtsOptions] = useLocalStorage<SpeakSchema | undefined>('ttsModel');
-  const [sttOptions, setSttOptions] = useLocalStorage<LiveSchema | undefined>('sttModel');
+  const [ttsOptions, setTtsOptions] = useLocalStorage<{ model: string; autoVoice: string }>('ttsModel', defaultTtsOptions);
+  const [sttOptions, setSttOptions] = useLocalStorage<LiveSchema | undefined>('sttModel', defaultSttsOptions);
   const [connection, setConnection] = useState<LiveClient>();
   const [connecting, setConnecting] = useState<boolean>(false);
   const [connectionReady, setConnectionReady] = useState<boolean>(false);
@@ -174,26 +177,14 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
   );
 
   useEffect(() => {
-    // it must be the first open of the page, let's set up the defaults
-
-    // Why this is needed?, the requestTtsAudio of Conversation is wrapped in useCallback
-    // which has a dependency of ttsOptions model
-    // but the player inside the Nowplaying provider is set on mount, means
-    // the when the startAudio is called the player is undefined.
-
-    // This can be fixed in 3 ways:
-    // 1. set player as a dependency inside the useCallback of requestTtsAudio
-    // 2. change the code of react-nowplaying to use the ref mechanism
-    // 3. follow the old code to avoid any risk i.e., first ttsOptions is undefined
-    // and later when it gets set, it also update the requestTtsAudio callback.
-    if (ttsOptions === undefined) {
+    if (!ttsOptions) {
       setTtsOptions(defaultTtsOptions);
     }
 
-    if (!sttOptions === undefined) {
+    if (!sttOptions) {
       setSttOptions(defaultSttsOptions);
     }
-    if (connection === undefined) {
+    if (!connection) {
       connect(defaultSttsOptions);
     }
   }, [connect, connection, setSttOptions, setTtsOptions, sttOptions, ttsOptions]);
@@ -244,7 +235,11 @@ const DeepgramContextProvider = ({ children }: DeepgramContextInterface) => {
 };
 
 function useDeepgram() {
-  return useContext(DeepgramContext);
+  const context = useContext(DeepgramContext);
+  if (!context) {
+    throw new Error("useDeepgram must be used within a DeepgramContextProvider");
+  }
+  return context;
 }
 
-export { DeepgramContextProvider, useDeepgram, voiceMap, voices };
+export { DeepgramContextProvider, useDeepgram, voiceMap, voices, DEFAULT_TTS_MODEL };
