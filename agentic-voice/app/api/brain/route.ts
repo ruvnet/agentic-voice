@@ -1,4 +1,3 @@
-// route.ts is the entry point for the API route that handles the incoming requests and generates responses using the OpenAI API and Exa API.
 import OpenAI from "openai";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import { extractKeywords, keywords } from "../utils/keywords";
@@ -27,6 +26,10 @@ async function searchExaAPI(query: string, apiKey: string, numResults: number = 
     body: JSON.stringify({ query, numResults })
   });
 
+  if (!response.ok) {
+    throw new Error(`Exa API search failed with status ${response.status}`);
+  }
+
   const data = await response.json();
   console.log(`searchExaAPI response for query "${query}":`, data);
 
@@ -47,6 +50,10 @@ async function getContentsExaAPI(ids: string[], apiKey: string) {
     },
     body: JSON.stringify({ ids })
   });
+
+  if (!response.ok) {
+    throw new Error(`Exa API contents fetch failed with status ${response.status}`);
+  }
 
   const data = await response.json();
   console.log("getContentsExaAPI response:", data);
@@ -119,7 +126,7 @@ export async function POST(req: Request) {
       url: result.url,
       title: result.title,
       author: result.author,
-      text: result.text.slice(0, 500), // Limit text to 500 characters
+      text: result.text ? result.text.slice(0, 500) : "No text available", // Limit text to 500 characters and handle missing text
     }));
 
     // Use the retrieved data to generate contextually relevant responses
