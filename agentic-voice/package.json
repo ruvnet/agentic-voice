@@ -35,8 +35,8 @@
     "react-textarea-autosize": "^8.5.3",
     "react-toastify": "^10.0.4",
     "remark-gfm": "^4.0.0",
-    "swr": "^2.2.4",
-    "sharp": "^0.29.3"
+    "sharp": "^0.33.4",
+    "swr": "^2.2.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.1.0",
