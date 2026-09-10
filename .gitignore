@@ -128,3 +128,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+.harness/**/node_modules/
+.harness/**/dist/
+.env*
+!.env.example
+*.tsbuildinfo

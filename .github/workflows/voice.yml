@@ -1,0 +1,40 @@
+name: Voice validation and delivery
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: agentic-voice/package-lock.json
+      - run: npm ci --prefix agentic-voice
+      - run: npm test --prefix agentic-voice
+      - run: npm run build --prefix agentic-voice
+      - run: npm run smoke --prefix agentic-voice
+      - run: npm audit --prefix agentic-voice --audit-level=moderate
+      - run: npm ci --prefix .harness/runtime
+      - run: npm test --prefix .harness/runtime
+      - run: npm audit --prefix .harness/runtime --audit-level=moderate
+      - run: npm run benchmark --prefix agentic-voice > benchmark.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: voice-validation
+          path: benchmark.json
+      - run: git archive --format=tar.gz --output=agentic-voice-source.tar.gz HEAD
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          name: validated-source
+          path: agentic-voice-source.tar.gz

@@ -1,0 +1,2 @@
+import {performance} from 'node:perf_hooks';import {messages} from '../lib/security.mjs';
+const samples=[];for(let i=0;i<10000;i++){const start=performance.now();messages([{role:'user',content:'Explain bounded voice requests'}]);samples.push(performance.now()-start)}samples.sort((a,b)=>a-b);console.log(JSON.stringify({benchmark:'local message validation',iterations:10000,medianMs:samples[5000],p95Ms:samples[9500],providerCalls:0,hardware:process.arch,node:process.version}));

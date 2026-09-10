@@ -1,0 +1,1 @@
+{"name":"agentic-voice-workspace","private":true,"scripts":{"test":"npm test --prefix agentic-voice","benchmark":"npm run benchmark --prefix agentic-voice"}}
