@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "generator": "0.1.0",
+  "template": "vertical:repo-maintainer",
+  "template_version": "0.0.0",
+  "vars": {
+    "name": "agentic-voice-agent",
+    "description": "Maintain and validate agentic-voice",
+    "host": "codex"
+  },
+  "hosts": [
+    "codex",
+    "claude-code",
+    "copilot"
+  ],
+  "files": {
+    ".claude/commands/doctor.md": "2f1475fa0ed34729cb2ed9d6cecf29e99781da0a56afef133361e3ff0a17bb52",
+    ".claude/commands/release-check.md": "9b1a77411d9b4eaf8d26a5360f3f568530e47de6915d5a03a684a4b79bfdcc14",
+    ".claude/commands/repo-triage.md": "d4d2e75a18adbaa2dc6a8123ab57765a29ffc52196600b6b29d22798f68df171",
+    ".claude/settings.json": "89e97b3b25ab79d4f5bfa310098db64d716bb5363a92c26148c45aee3bcda02b",
+    ".claude/skills/memory-inspect/SKILL.md": "996b09e2dd12f68a589d94de0cbaef1522a30c912157cbbd6557abd3c4fd1ff3",
+    ".claude/skills/plan-change/SKILL.md": "84e1c44ca264b999ebf80cd8fa0e5ebf554275bbd8023b1530ad053a44482e30",
+    ".claude-plugin/plugin.json": "556351e1e02b8924fbe451a505ee13eae918bd1fa9e1b8bcb82eb8d3dace5798",
+    "CLAUDE.md": "38f834670fb7c90b581dc3bc6ae09121a14cd9e84637c8ce2b762f75cb6d16f8",
+    "README.md": "e1a7d834034b6e67db2bc4772319b9be1ff271e2921e874a847862ee73604f1c",
+    "__tests__/smoke.test.ts": "f5cc25d735bcd1c5e7f5f0e9a40b07d6b520ddf0220d172ae7f53842b56f1743",
+    "bin/cli.js": "f91eb90c91e408bf2bee1c5dc7e30bced580ca66697ba908e05810f831f01c55",
+    "package.json": "c016126d8b77467a4905bc8794e353295bc90591b27c635843d0d13d3ce920bb",
+    "src/agents/benchmarker.ts": "53298976e57701825af67046794f30d2fd2d2e922954e8bdc5515928878f4a9d",
+    "src/agents/maintainer.ts": "04135c22923fa2eb0b850cdb50e4eb4280ccb684c4fcaf0ef77936b5f323d891",
+    "src/agents/release.ts": "cd221248838940dcc021f9dd29128dca43cf5ac150763123f2ae20e150cbc258",
+    "src/agents/security.ts": "b27260172d1b5e385b00bfa8d3543ee453ce7706a501996bcccb3f7fb94f90a8",
+    "src/init.ts": "83e70652bd3b25f94ab08fd655a803cd9f38ee11482d5c86bf6f090b9f4935af",
+    "tsconfig.json": "8b4e730a1aa39162ac574455d7a98e1881f5313ca80ffe503b9652dcf0c76b9d",
+    "vitest.config.ts": "e9e94875611ab1cd602c1f6923902c2dab7953a75ac022962973639d1937587a",
+    ".codex/config.toml": "ed6317c3638e7106d8e3fd6ccf318938dccb3564a859d721da87745e4701d5ed",
+    "AGENTS.md": "392c5f863b75dbfeeffab7e0ea2f6ec8b1cb60714bcfe81e53efeda15c781a9d",
+    ".vscode/mcp.json": "b20f11f3ba23ac9af456ebd1c087d6e1e1b631b894691301442039c4d6347607",
+    "install.md": "5192a684e362674a0b8b45b6ce84381fd885642116fcdfedd58d8f1d20c79eef",
+    ".github/copilot-instructions.md": "392c5f863b75dbfeeffab7e0ea2f6ec8b1cb60714bcfe81e53efeda15c781a9d",
+    "LICENSE": "9a7f6df505f7f85cf58bfc9294d4e9b5bfb181f2e55bfa67be923f5d6512ddb4",
+    ".claude/skills/evolve/SKILL.md": "b54708f41edf38f8f91aeaf33c73bda0fa8ab737701fd73fcfae72ea531eb609",
+    "src/sessions/log.ts": "0195838041c49bb2f2745a231f3179a1629eef4749d220087a9615882d344d1d",
+    "src/field-memory.ts": "659354e8dc04375fbe3e7566f970a351249d928bd4759bf0a7a0d6bc35fd8a23"
+  },
+  "generated_at": "2026-09-10T23:20:13.271Z",
+  "meta": {
+    "surface": "cli"
+  },
+  "field_memory": {
+    "contract_schema": 1,
+    "enabled": true,
+    "package": "@metaharness/field-memory",
+    "version": "^0.1.0",
+    "module": "src/field-memory.ts",
+    "layout": "packed",
+    "minimum_support": 3,
+    "hysteresis_enabled": false,
+    "storage_path_required": true,
+    "drift_window_enabled": true,
+    "principal_identity_required": true,
+    "identity_hash_key_required": true
+  }
+}

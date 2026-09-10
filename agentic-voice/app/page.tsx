@@ -1,63 +1,16 @@
-"use client";
-
-import Image from "next/image";
-import GitHubButton from "react-github-btn";
-
-export const runtime = "edge";
-import { init } from "@fullstory/browser";
-import { useEffect } from "react";
-import { XIcon } from "./components/icons/XIcon";
-import { FacebookIcon } from "./components/icons/FacebookIcon";
-import { LinkedInIcon } from "./components/icons/LinkedInIcon";
-import Conversation from "./components/Conversation";
-
-export default function Home() {
-  useEffect(() => {
-    init({ orgId: "5HWAN" });
-  }, []);
-
-  return (
-    <>
-      <div className="h-full overflow-hidden">
-        {/* height 4rem */}
-        <div className="bg-gradient-to-b from-black/50 to-black/10 backdrop-blur-[2px] h-[4rem] flex items-center">
-          <header className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8 flex items-center justify-between pt-4 md:pt-0 gap-2">
-            <div>
-            <a className="flex items-center justify-start" href="/" style={{ marginLeft: '-20px' }}>
-            <Image
-              className="w-auto h-auto max-w-full sm:max-w-none"
-              src="/agentic-voice-logo-white.png"
-              alt="Agentic Voice"
-              width={100} // Adjust width as needed
-              height={40} // Adjust height as needed
-              priority
-            />
-          </a>
-            </div>
-            <div className="flex items-center justify-center md:gap-6 text-sm">
-              <span className="mt-1">
-               
-              </span>
-
-              <span className="gradient-shadow bg-gradient-to-r to-[#13EF93]/50 from-[#149AFB]/80 rounded">
-                
-              </span>
-            </div>
-          </header>
-        </div>
-
-        {/* height 100% minus 8rem */}
-        <main className="mx-auto max-w-7xl  px-4 md:px-6 lg:px-8 h-[calc(100%-8rem)]">
-          <Conversation />
-        </main>
-
-        {/* height 4rem */}
-        <div className=" backdrop-blur-[2px] h-[4rem] flex items-center">
-          <footer className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8 flex items-center justify-center gap-4 md:text-xl font-inter text-[#8a8a8e]">
-             
-          </footer>
-        </div>
-      </div>
-    </>
-  );
+'use client';
+import {useEffect,useRef,useState} from 'react';
+type Message={role:'user'|'assistant',content:string};
+export default function Home(){
+ const [token,setToken]=useState(''),[input,setInput]=useState(''),[history,setHistory]=useState<Message[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(''),[recording,setRecording]=useState(false);
+ const recorder=useRef<MediaRecorder|null>(null),mic=useRef<MediaStream|null>(null),recordTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
+ const pending=useRef<AbortController|null>(null),audio=useRef<HTMLAudioElement|null>(null),url=useRef<string|null>(null);
+ function stop(){if(recordTimer.current)clearTimeout(recordTimer.current);if(recorder.current?.state==='recording')recorder.current.stop();mic.current?.getTracks().forEach(t=>t.stop());setRecording(false);pending.current?.abort();pending.current=null;audio.current?.pause();audio.current=null;if(url.current)URL.revokeObjectURL(url.current);url.current=null;setBusy(false)}
+ useEffect(()=>()=>{if(recordTimer.current)clearTimeout(recordTimer.current);mic.current?.getTracks().forEach(t=>t.stop());pending.current?.abort();audio.current?.pause();if(url.current)URL.revokeObjectURL(url.current)},[]);
+ async function record(){if(recording){recorder.current?.stop();return}stop();const controller=new AbortController();pending.current=controller;setError('');try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});if(pending.current!==controller){stream.getTracks().forEach(t=>t.stop());return}mic.current=stream;const device=new MediaRecorder(stream);recorder.current=device;const chunks:Blob[]=[];let size=0;device.ondataavailable=e=>{size+=e.data.size;if(size<=1024*1024)chunks.push(e.data);else{controller.abort();if(device.state==='recording')device.stop();setError('Recording exceeded 1 MiB')}};device.onstop=async()=>{if(recordTimer.current)clearTimeout(recordTimer.current);stream.getTracks().forEach(t=>t.stop());setRecording(false);if(controller.signal.aborted)return;try{const response=await fetch('/api/transcribe',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':device.mimeType},body:new Blob(chunks,{type:device.mimeType}),signal:controller.signal});if(!response.ok)throw Error('Transcription unavailable');const result=await response.json();if(pending.current===controller)setInput(result.text)}catch{if(!controller.signal.aborted)setError('Transcription unavailable')}};device.start(250);setRecording(true);recordTimer.current=setTimeout(()=>{if(device.state==='recording')device.stop()},30000)}catch{setError('Microphone unavailable')}}
+ async function send(event:React.FormEvent){event.preventDefault();stop();const controller=new AbortController();pending.current=controller;setBusy(true);setError('');const list=[...history.slice(-30),{role:'user' as const,content:input}];setHistory(list);setInput('');
+ try{const response=await fetch('/api/brain',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({messages:list}),signal:controller.signal});if(!response.ok||!response.body)throw Error(`Request unavailable (${response.status})`);const reader=response.body.getReader(),decoder=new TextDecoder();let answer='';while(true){const {done,value}=await reader.read();if(done)break;answer+=decoder.decode(value,{stream:true});if(pending.current!==controller)return;setHistory([...list,{role:'assistant',content:answer}])}answer+=decoder.decode();
+ if(pending.current!==controller)return;const speech=await fetch('/api/speak',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({content:answer}),signal:controller.signal});if(speech.ok){const blob=await speech.blob();if(pending.current!==controller)return;url.current=URL.createObjectURL(blob);audio.current=new Audio(url.current);await audio.current.play()}
+ }catch(e){if(!controller.signal.aborted)setError(e instanceof Error?e.message:'Request unavailable')}finally{if(pending.current===controller)setBusy(false)}}
+ return <main><header><span>RUVNET</span><h1>Agentic Voice</h1><p>Type a question. Read the live response. Hear it spoken.</p></header><label>Session access token<input type="password" autoComplete="off" value={token} onChange={e=>setToken(e.target.value)}/></label><p className="hint">Your token stays in this page's memory. An operator must enable provider access. Speech playback requires Deepgram; text requires OpenAI.</p><section aria-live="polite">{history.map((m,i)=><article key={i}><b>{m.role==='user'?'You':'Assistant'}</b><p>{m.content}</p></article>)}</section><form onSubmit={send}><label>Message<textarea maxLength={4096} required value={input} onChange={e=>setInput(e.target.value)}/></label><button disabled={busy||token.length<32}>Send</button><button type="button" onClick={stop}>Stop</button><button type="button" disabled={token.length<32||busy} onClick={record}>{recording?"Transcribe recording":"Record voice"}</button></form>{error&&<p role="alert">{error}</p>}<footer>Audio is buffered before playback. Stop cancels the current response and audio. Record up to 30 seconds, then review the transcript before sending.</footer></main>
 }
